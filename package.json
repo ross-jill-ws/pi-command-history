@@ -1,0 +1,30 @@
+{
+  "name": "pi-command-history",
+  "version": "0.1.0",
+  "description": "Folder-based persistent command history for pi. Recall previous commands with ctrl+up/down across sessions.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nicholasgasior/pi-command-history.git"
+  },
+  "author": "Ross Z",
+  "license": "MIT",
+  "keywords": [
+    "pi-package",
+    "command-history",
+    "folder-history",
+    "persistent-history"
+  ],
+  "files": [
+    "extensions",
+    "package.json",
+    "README.md"
+  ],
+  "peerDependencies": {
+    "@mariozechner/pi-coding-agent": "*"
+  },
+  "pi": {
+    "extensions": [
+      "extensions/index.ts"
+    ]
+  }
+}
