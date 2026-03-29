@@ -25,7 +25,7 @@ When you enter a command in pi, it's saved to a per-folder history file. Next ti
 
 ### What gets saved
 
-- All user prompts are saved (excluding `/` slash commands)
+- All user input is saved, including `/` slash commands
 - History is deduplicated — repeated commands move to the most recent position
 - Up to 500 commands are stored per folder
 

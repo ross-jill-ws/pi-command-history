@@ -92,9 +92,6 @@ export default function (pi: ExtensionAPI) {
     const text = event.text?.trim();
     if (!text || !currentCwd) return;
 
-    // Don't save slash commands to history
-    if (text.startsWith("/")) return;
-
     appendHistory(currentCwd, text);
 
     // Add to in-memory history (deduplicate)
