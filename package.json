@@ -1,6 +1,6 @@
 {
   "name": "pi-command-history",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Folder-based persistent command history for pi. Recall previous commands with ctrl+up/down across sessions.",
   "repository": {
     "type": "git",

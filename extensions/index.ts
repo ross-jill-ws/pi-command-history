@@ -9,11 +9,10 @@
  *   ctrl+up   - Previous command in folder history
  *   ctrl+down - Next command in folder history
  *
- * History is stored in ~/.pi/folder-history/<hash>.jsonl
+ * History is stored in ~/.pi/folder-history/<path-with-dashes>.jsonl
  */
 
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
-import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, appendFileSync } from "node:fs";
 import { join } from "node:path";
 import { homedir } from "node:os";
@@ -22,8 +21,8 @@ const HISTORY_DIR = join(homedir(), ".pi", "folder-history");
 const MAX_HISTORY = 500;
 
 function getHistoryFile(cwd: string): string {
-  const hash = createHash("sha256").update(cwd).digest("hex").slice(0, 16);
-  return join(HISTORY_DIR, `${hash}.jsonl`);
+  const name = cwd.replace(/\//g, "-");
+  return join(HISTORY_DIR, `${name}.jsonl`);
 }
 
 function loadHistory(cwd: string): string[] {
