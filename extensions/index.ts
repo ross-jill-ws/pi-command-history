@@ -19,6 +19,9 @@ import { homedir } from "node:os";
 
 const HISTORY_DIR = join(homedir(), ".pi", "folder-history");
 const MAX_HISTORY = 500;
+const SHOW_STATUS = !/^(0|false|off|no)$/i.test(
+  process.env.PI_COMMAND_HISTORY_SHOW_STATUS ?? "1"
+);
 
 function getHistoryFile(cwd: string): string {
   const name = cwd.replace(/\//g, "-");
@@ -78,12 +81,16 @@ export default function (pi: ExtensionAPI) {
     historyIndex = -1;
     savedEditorText = "";
 
-    ctx.ui.setStatus(
-      "folder-history",
-      history.length > 0
-        ? `📜 ${history.length} cmds (ctrl+↑/↓)`
-        : undefined
-    );
+    if (SHOW_STATUS) {
+      ctx.ui.setStatus(
+        "folder-history",
+        history.length > 0
+          ? `📜 ${history.length} cmds (ctrl+↑/↓)`
+          : undefined
+      );
+    } else {
+      ctx.ui.setStatus("folder-history", undefined);
+    }
   });
 
   // Save new commands to history file

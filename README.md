@@ -32,8 +32,18 @@ When you enter a command in pi, it's saved to a per-folder history file. Next ti
 ### How it works
 
 - History files are stored in `~/.pi/folder-history/` as JSONL, keyed by a hash of the working directory
-- A status indicator in the footer shows the number of saved commands
+- A status indicator in the footer shows the number of saved commands by default
 - Compatible with other editor extensions (e.g., `pi-vim`) — no editor replacement conflicts
+
+### Disable the footer UI
+
+If you do not want the footer status indicator, start pi with:
+
+```bash
+PI_COMMAND_HISTORY_SHOW_STATUS=0 pi
+```
+
+Any of `0`, `false`, `off`, or `no` will disable it.
 
 ## Uninstall
 
