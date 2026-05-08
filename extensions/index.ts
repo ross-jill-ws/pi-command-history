@@ -13,15 +13,15 @@
  */
 
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import { getSetting } from "@juanibiapina/pi-extension-settings";
+import type { SettingDefinition } from "@juanibiapina/pi-extension-settings";
 import { existsSync, mkdirSync, readFileSync, appendFileSync } from "node:fs";
 import { join } from "node:path";
 import { homedir } from "node:os";
 
+const EXTENSION_NAME = "pi-command-history";
 const HISTORY_DIR = join(homedir(), ".pi", "folder-history");
 const MAX_HISTORY = 500;
-const SHOW_STATUS = !/^(0|false|off|no)$/i.test(
-  process.env.PI_COMMAND_HISTORY_SHOW_STATUS ?? "1"
-);
 
 function getHistoryFile(cwd: string): string {
   const name = cwd.replace(/\//g, "-");
@@ -70,6 +70,19 @@ function appendHistory(cwd: string, text: string): void {
 }
 
 export default function (pi: ExtensionAPI) {
+  pi.events.emit("pi-extension-settings:register", {
+    name: EXTENSION_NAME,
+    settings: [
+      {
+        id: "showFooterStatus",
+        label: "Show footer status indicator",
+        description: "Display the saved command count in the footer.",
+        defaultValue: "on",
+        values: ["on", "off"],
+      },
+    ] satisfies SettingDefinition[],
+  });
+
   let history: string[] = [];
   let historyIndex = -1; // -1 = not browsing, 0 = most recent, 1 = second most recent, etc.
   let savedEditorText = ""; // text before history browsing started
@@ -81,7 +94,10 @@ export default function (pi: ExtensionAPI) {
     historyIndex = -1;
     savedEditorText = "";
 
-    if (SHOW_STATUS) {
+    const showStatus =
+      getSetting(EXTENSION_NAME, "showFooterStatus", "on") !== "off";
+
+    if (showStatus) {
       ctx.ui.setStatus(
         "folder-history",
         history.length > 0
