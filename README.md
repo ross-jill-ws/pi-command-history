@@ -21,7 +21,49 @@ pi -e npm:pi-command-history
 | `shift+up` | Previous command (older) |
 | `shift+down` | Next command (newer) |
 
-When you enter a command in pi, it's saved to a per-folder history file. Next time you open pi in the same folder (even in a new session), press `shift+up` to cycle through your previous commands.
+When you enter a command in pi, it's saved to a per-folder history file. Next time you open pi in the same folder (even in a new session), press `shift+up` from an empty editor to cycle through your previous commands.
+
+The default `shift+up`/`shift+down` shortcuts are registered with `pi.registerShortcut()`. If you prefer plain `up`/`down`, set them in the config below: in `auto` mode they are handled through raw terminal input to avoid pi extension shortcut conflict warnings with `tui.select.up` and `tui.select.down`. The extension intercepts these keys only when history navigation owns the cursor position; other cases fall back to pi's normal cursor movement or command completion.
+
+## Config
+
+Create `~/.pi/pi-command-history.json` to customize shortcuts, conflict handling, or status display:
+
+```json
+{
+  "shortcuts": {
+    "prev": "shift+up",
+    "next": "shift+down"
+  },
+  "conflictStrategy": "auto",
+  "showStatus": "hidden",
+  "debug": false
+}
+```
+
+Invalid config values are ignored and fall back to the defaults.
+
+The `showStatus` field controls whether a status indicator appears in the footer:
+
+| Value | Behavior |
+|---|---|
+| `"hidden"` | No status indicator shown (default) |
+| `"text"` | Show `12 cmds (shift+up/down)` without icon |
+| `"full"` | Show `📜 12 cmds (shift+up/down)` with icon |
+
+Set `debug` to `true`, or start pi with `PI_COMMAND_HISTORY_DEBUG=1`, to write terminal key diagnostics to `~/.pi/pi-command-history-debug.log`. Debug logging records escape sequences and history state, not normal text input.
+
+### Conflict strategy
+
+| Strategy | Behavior |
+|----------|----------|
+| `auto` | Default. Known conflicting `up`/`down` shortcuts use raw terminal input; other shortcuts use `pi.registerShortcut()`. |
+| `register` | Always use `pi.registerShortcut()`. This can show pi shortcut conflict warnings for `up`/`down`. |
+| `safe` | Replace conflicting `up`/`down` shortcuts with `ctrl+up`/`ctrl+down`. |
+
+Raw terminal input interception starts history navigation only from an empty editor. Once browsing history, it consumes `up` on the first visual line and `down` on the last visual line, including at the oldest and newest boundaries, so pi's built-in history cannot take over. Autocomplete always keeps ownership of `up`/`down`.
+
+Registered shortcuts reserve their key in pi even when history navigation is unavailable. Use `auto` with `up`/`down` when the editor should retain its normal behavior outside history navigation.
 
 ### What gets saved
 
@@ -31,9 +73,11 @@ When you enter a command in pi, it's saved to a per-folder history file. Next ti
 
 ### How it works
 
-- History files are stored in `~/.pi/folder-history/` as JSONL, keyed by a hash of the working directory
+- History files are stored in `~/.pi/folder-history/` as JSONL, keyed by a SHA-256 hash of the working directory
+- Each history file is compacted to the latest 500 entries after reaching 1,000 stored records
 - A status indicator in the footer shows the number of saved commands
 - Compatible with other editor extensions (e.g., `pi-vim`) — no editor replacement conflicts
+- Non-conflicting shortcuts are registered with `pi.registerShortcut()`; conflicting `up`/`down` shortcuts use raw terminal input in `auto` mode
 
 ## Uninstall
 
@@ -50,3 +94,7 @@ rm -rf ~/.pi/folder-history/
 ## License
 
 MIT
+
+## Acknowledgments
+
+The history navigation state machine was informed by [oh-my-pi](https://github.com/can1357/oh-my-pi).

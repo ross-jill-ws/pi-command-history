@@ -2,6 +2,7 @@
   "name": "pi-command-history",
   "version": "0.2.2",
   "description": "Folder-based persistent command history for pi. Recall previous commands with shift+up/down across sessions.",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git@github.com:ross-jill-ws/pi-command-history.git"
@@ -20,7 +21,8 @@
     "README.md"
   ],
   "peerDependencies": {
-    "@earendil-works/pi-coding-agent": "*"
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*"
   },
   "pi": {
     "extensions": [
