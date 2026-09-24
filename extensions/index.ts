@@ -6,8 +6,8 @@
  * you can cycle through all commands ever entered there.
  *
  * Keybindings:
- *   ctrl+alt+up   - Previous command in folder history
- *   ctrl+alt+down - Next command in folder history
+ *   shift+up   - Previous command in folder history
+ *   shift+down - Next command in folder history
  *
  * History is stored in ~/.pi/folder-history/<path-with-dashes>.jsonl
  */
@@ -81,7 +81,7 @@ export default function (pi: ExtensionAPI) {
     ctx.ui.setStatus(
       "folder-history",
       history.length > 0
-        ? `📜 ${history.length} cmds (ctrl+alt+↑/↓)`
+        ? `📜 ${history.length} cmds (shift+↑/↓)`
         : undefined
     );
   });
@@ -106,8 +106,8 @@ export default function (pi: ExtensionAPI) {
     return { action: "continue" as const };
   });
 
-  // ctrl+alt+up: go back in history (older)
-  pi.registerShortcut("ctrl+alt+up", {
+  // shift+up: go back in history (older)
+  pi.registerShortcut("shift+up", {
     description: "Previous command from folder history",
     handler: (ctx) => {
       if (history.length === 0) return;
@@ -126,8 +126,8 @@ export default function (pi: ExtensionAPI) {
     },
   });
 
-  // ctrl+alt+down: go forward in history (newer)
-  pi.registerShortcut("ctrl+alt+down", {
+  // shift+down: go forward in history (newer)
+  pi.registerShortcut("shift+down", {
     description: "Next command from folder history",
     handler: (ctx) => {
       if (historyIndex <= -1) return; // not browsing
